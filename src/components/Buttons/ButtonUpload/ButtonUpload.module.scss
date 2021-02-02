@@ -1,0 +1,17 @@
+@import '../../../assets/styles/vars';
+
+.btn_upload {
+  padding: 0.5rem 2rem;
+  font-size: 1.2rem;
+  border-radius: 4px;
+  color: $green;
+  border: 1px solid $green;
+  background-color: $white;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s ease;
+
+  &:hover {
+    background-color: $green;
+    color: $white;
+  }
+}
