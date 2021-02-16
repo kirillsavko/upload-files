@@ -8,6 +8,12 @@ import styles from './MainView.module.scss';
 const MainView = () => {
   const [images, setImages] = useState([]);
 
+  const deleteImage = (fileIndex) => {
+    const updatedImages = [...images];
+    updatedImages.splice(fileIndex, 1);
+    setImages([...updatedImages]);
+  };
+
   useEffect(() => {
     console.log(images);
   }, [images, images.length]);
@@ -22,13 +28,14 @@ const MainView = () => {
       </ButtonUpload>
       {images.length !== 0 && (
         <div className={styles.images}>
-          {images.map((file) => (
+          {images.map((file, fileIndex) => (
             <div 
-              key={file.name}
+              key={file.id}
               className={styles['images__item']}
             >
               <ImageCard
                 file={file}
+                onClose={() => deleteImage(fileIndex)}
               />
             </div>
           ))}

@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
+import uuid from 'react-uuid';
 
 import styles from './ButtonUpload.module.scss';
 
@@ -20,7 +21,14 @@ const ButtonUpload = ({
         type='file'
         ref={input}
         multiple={isMulti}
-        onChange={() => setImages(Array.from(input?.current?.files))}
+        onChange={() => {
+          const images = Array.from(input?.current?.files);
+          images.forEach((item) => {
+            item.id = uuid();
+          });
+
+          setImages([...images]);
+        }}
         accept='image/jpeg,image/png,image/jpg,image/gif'
       />
       <button 
