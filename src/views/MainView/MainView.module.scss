@@ -7,15 +7,22 @@
   background-color: $white;
   box-shadow: 0px 0px 5px rgba(0, 0, 0, .2);
   border-radius: 5px;
-}
 
-.images {
-  margin-top: 2rem;
-  display: flex;
-  align-items: flex-start;
-  flex-wrap: wrap;
+  &-images {
+    margin-top: 2rem;
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  
+    &__item {
+      margin-right: 10px;
+    }
+  }
 
-  &__item {
-    margin-right: 10px;
+  &-buttons {
+    button {
+      margin: 0 5px;
+    }
   }
 }
+
