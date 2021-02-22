@@ -1,0 +1,13 @@
+@import '../../assets/styles/vars';
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 850px;
+  margin: -5px;
+  
+  &__item {
+    width: calc(33.33% - 10px);
+    margin: 5px;
+  }
+}

@@ -2,6 +2,7 @@
 
 .wrapper {
   width: 800px;
+  margin: 0 auto 50px;
   padding: 2rem;
   text-align: center;
   background-color: $white;
@@ -26,3 +27,8 @@
   }
 }
 
+.images-uploaded {
+  &__title {
+    text-align: center;
+  }
+}

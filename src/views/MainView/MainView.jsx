@@ -1,34 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import ImageCard from '../../components/ImageCard';
 import ButtonUpload from '../../components/Buttons/ButtonUpload';
 import Button from '../../components/Buttons/Button';
 import Modal from '../../components/Modal';
+import Gallery from '../../components/Gallery';
 
 import styles from './MainView.module.scss';
 
 const MainView = ({
   storage,
 }) => {
-  const [images, setImages] = useState([]);
+  const [imagesToUpload, setImagesToUpload] = useState([]);
+  const [fetchedImages, setFetchedImages] = useState([]);
   const [isActiveModal, setIsActiveModal] = useState(false);
 
-  const deleteImage = (fileIndex) => {
-    const updatedImages = [...images];
-    updatedImages.splice(fileIndex, 1);
-    setImages([...updatedImages]);
-  };
-
   const uploadFiles = () => {
-    Promise.all(images.map((image) => storage.ref(`images/${image.name}`).put(image)))
+    Promise.all(imagesToUpload.map((image) => storage.ref(`images/${image.name}`).put(image)))
       .then(() => setIsActiveModal(true));
   };
+
+  const deleteImage = (fileIndex) => {
+    const updatedImages = [...imagesToUpload];
+    updatedImages.splice(fileIndex, 1);
+    setImagesToUpload([...updatedImages]);
+  };
+
+  const fetchImages = () => {
+    return storage.ref('images').listAll()
+      .then((res) => {
+        return Promise.all(res.items.map((itemRef) => {
+          return itemRef.getDownloadURL().then((response) => response);
+        }));
+      });
+  };
+
+  useEffect(() => {
+    fetchImages()
+      .then((res) => {
+        setFetchedImages(res);
+      });
+  }, []);
 
   return (
     <>
       {isActiveModal && (
         <Modal onClose={() => {
-          setImages([]);
+          fetchImages()
+            .then((res) => {
+              setFetchedImages(res);
+            });;
+
+          setImagesToUpload([]);
           setIsActiveModal(false);
         }}>
           Все картинки успешно загружены!
@@ -38,11 +61,11 @@ const MainView = ({
         <div className={styles['wrapper-buttons']}>
           <ButtonUpload
             isMulti
-            setImages={setImages}
+            setImages={setImagesToUpload}
           >
             Открыть
           </ButtonUpload>
-          {images.length !== 0 && (
+          {imagesToUpload.length !== 0 && (
             <Button
               onClick={uploadFiles}
             >
@@ -50,9 +73,9 @@ const MainView = ({
             </Button>
           )}
         </div>
-        {images.length !== 0 && (
+        {imagesToUpload.length !== 0 && (
           <div className={styles['wrapper-images']}>
-            {images.map((file, fileIndex) => (
+            {imagesToUpload.map((file, fileIndex) => (
               <div 
                 key={file.id}
                 className={styles['wrapper-images__item']}
@@ -66,6 +89,14 @@ const MainView = ({
           </div>
         )}
       </div>
+      {(fetchedImages.length > 0) && (
+        <div className={styles['images-uploaded']}>
+          <h1 className={styles['images-uploaded__title']}>
+            Загруженные картинки
+          </h1>
+          <Gallery images={fetchedImages} />
+        </div>
+      )}
     </>
   );
 };
